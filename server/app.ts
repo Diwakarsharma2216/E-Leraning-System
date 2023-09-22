@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express"
 import cors from "cors"
 require("dotenv").config()
 import cookieParser from "cookie-parser"
+import { middlewareErrorHandle } from "./middleware/error"
 
 export const app=express()
 
@@ -31,3 +32,5 @@ app.all("*",(req:Request,res:Response,next:NextFunction)=>{
     next(err)
 })
 
+
+app.use(middlewareErrorHandle)
