@@ -1,6 +1,7 @@
 import mongoose,{Document,Model,Schema} from "mongoose";
 import bcrypt from "bcryptjs"
-
+require("dotenv").config()
+import  jwt  from "jsonwebtoken";
 const emailRegexPattern:RegExp=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface IUser extends Document{
@@ -15,6 +16,8 @@ export interface IUser extends Document{
     isVerified:boolean;
     courses:Array<{courseId:String}>
     comparePassword:(password:string)=>Promise<boolean>
+    SignAccesToken:()=>string
+    SignRefreshToken:()=>string
 }
 
 const userSchema:Schema<IUser>=new mongoose.Schema({
@@ -58,6 +61,7 @@ const userSchema:Schema<IUser>=new mongoose.Schema({
     ]
 },{timestamps:true})
 
+
 userSchema.pre<IUser>("save",async function (next) {
     if(!this.isModified("password")){
         next()
@@ -70,6 +74,21 @@ userSchema.pre<IUser>("save",async function (next) {
 userSchema.methods.comparePassword=async function (enteredPassword:string):Promise<boolean>{
 return await bcrypt.compare(enteredPassword,this.password)
     
+}
+
+// sign acces tokrn
+userSchema.methods.SignAccesToken=function(){
+    return jwt.sign({id:this._id},process.env.ACCES_TOKEN || "",{
+        expiresIn:"5m"
+    })
+}
+
+// sign refresh token
+
+userSchema.methods.SignRefreshToken=function(){
+    return jwt.sign({id:this._id},process.env.REFRESH_TOKEN || "",{
+        expiresIn:"7d"
+    })
 }
 
 export const UserModel:Model<IUser>=mongoose.model("User",userSchema)
