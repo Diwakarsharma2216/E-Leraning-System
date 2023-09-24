@@ -3,6 +3,7 @@ import ErrorHandling from "../utlis/ErrorHandling";
 import  jwt, { JwtPayload, Secret }  from "jsonwebtoken";
 require("dotenv").config()
 import { redis } from "../utlis/redis";
+import { userinfra } from "../@types/coustom";
 
 
 export const isAuthticated=async(req:Request,res:Response,next:NextFunction)=>{
@@ -25,6 +26,6 @@ if(!user){
 }
 
 
-// req.user=JSON.parse(user)  
+req.user=JSON.parse(user)  as userinfra
 next()
 }

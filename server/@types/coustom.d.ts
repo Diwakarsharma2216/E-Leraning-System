@@ -1,7 +1,7 @@
 import  {Request} from "express";
 
 
-interface userinfra {
+export   interface userinfra {
     name:string,
     email:String,
     password:string,
@@ -15,6 +15,7 @@ interface userinfra {
     comparePassword:(password:string)=>Promise<boolean>
     SignAccesToken:()=>string
     SignRefreshToken:()=>string
+    _id?:string
 }
 declare global{
     namespace Express{
@@ -23,3 +24,4 @@ declare global{
         }
     }
 }
+

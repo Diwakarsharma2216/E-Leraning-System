@@ -141,8 +141,8 @@ export const logoutUser=async(req:Request,res:Response,next:NextFunction)=>{
   try {
     res.cookie("access_token","",{maxAge:1})
     res.cookie("refresh_token","",{maxAge:1})
-    // let userid=req.user?._id      
-    //  redis.del(userid)  
+    let userid=req.user?._id  as string
+     redis.del(userid)  
     res.status(200).json({
         success:true,
         message:"Logged out succesfully"
