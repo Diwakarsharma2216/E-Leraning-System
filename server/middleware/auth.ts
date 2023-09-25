@@ -29,3 +29,15 @@ if(!user){
 req.user=JSON.parse(user)  as userinfra
 next()
 }
+
+// validate user role
+
+export const authorizeRoles=(...roles:string[])=>{
+    return (req:Request,res:Response,next:NextFunction)=>{
+        if(!roles.includes(req.user?.role as string)){
+            // return next(new ErrorHandling(`Role:${req.user?.role} `))
+            return next(new ErrorHandling(`Role:${req.user?.role} is not allowed to access this resource`,400)) 
+        }
+        next()
+    }
+}

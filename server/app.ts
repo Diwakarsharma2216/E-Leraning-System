@@ -4,6 +4,7 @@ require("dotenv").config()
 import cookieParser from "cookie-parser"
 import { middlewareErrorHandle } from "./middleware/error"
 import userRouter from "./routes/user.routes"
+import { CourseRouter } from "./routes/course.routes"
 
 export const app=express()
 
@@ -22,6 +23,8 @@ app.use(cors({
 
 app.use("/user",userRouter)
 
+// 
+app.use("/course",CourseRouter)
 // test api
 app.get("/test",(req:Request,res:Response,next:NextFunction)=>{
 res.status(200).json({
