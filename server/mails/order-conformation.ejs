@@ -1,0 +1,100 @@
+<!-- orderConfirmation.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+
+  <!-- Add your CSS styles here -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .order-confirmation {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .order-details {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .order-id {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .order-date {
+      color: #777;
+    }
+
+    .order-summary {
+      margin-top: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .order-item-name {
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+
+    .order-item-price {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="order-confirmation">
+    <h1>Order Confirmation</h1>
+    <p>Dear <%= name %>,</p>
+    <p>Your order has been successfully placed. Below are the order details:</p>
+
+    <div class="order-details">
+      <p>Order ID: <span class="order-id"><%= _id %></span></p>
+      <p>Order Date: <span class="order-date"><%= date %></span></p>
+    </div>
+
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <ul>
+          <li class="order-item">
+            <span class="order-item-name"><%= coursename %></span>
+            <span class="order-item-price">$<%= price %></span>
+          </li>
+      </ul>
+     
+    </div>
+
+    <p>Thank you for your order!</p>
+  </div>
+</body>
+</html>
