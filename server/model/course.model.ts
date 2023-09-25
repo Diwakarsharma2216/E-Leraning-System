@@ -56,7 +56,8 @@ rating:{
     type:Number,
     default:0
 },
-comment:String
+comment:String,
+commentReplies:[Object]
 })
 
 const linkSchema=new Schema<ILink>({

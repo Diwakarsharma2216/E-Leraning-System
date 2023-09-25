@@ -245,3 +245,92 @@ export const EditCourse=async(req:Request,res:Response,next:NextFunction)=>{
                 return next(new ErrorHandling(error.message,400))
             }
             }
+
+//  add review in course 
+interface IAddReviewData{
+    review:string,
+    rating:number,
+    userId:string
+}
+
+
+export const addReveiw=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+     const userCourseList=req.user?.courses
+ const courseId=req.params.id;
+
+ // check if courseid alreday exists in usercourseList based on _id
+ const courseExist=userCourseList?.some((course:any)=>course._id.toString()===courseId)
+ if(courseExist){
+    return next(new ErrorHandling("Your are not Eligible to acces this course",400))
+ }
+
+ const course=await CourseModel.findById(courseId)
+ const {review,rating}=req.body as IAddReviewData
+
+ const reviwData:any={
+    user:req.user,
+    comment:review,
+    rating
+ }
+
+ course?.reviews.push(reviwData)
+ await course?.save()
+
+ let avg=0;
+
+ course?.reviews.forEach((rev:any)=>{
+    avg+=rev.rating
+ })
+
+
+ const notification={
+    title:"New Review Received",
+    message:`${req.user?.name} has given a review in ${course?.name}`
+ }
+
+ res.status(200).json({
+    succes:true,
+    course
+ })
+
+    } catch (error:any) {
+        return next(new ErrorHandling(error.message,400))
+    }
+    }
+
+
+    // reply to the review only user is reply
+
+    export const AddReplyToTreview=async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const {comment,courseId,reviewId}=req.body
+    const course=await CourseModel.findById(courseId)
+    if(!course){
+        return next(new ErrorHandling("course not found",400))
+    }
+    const review=course?.reviews.find((rev:any)=>rev._id.toString()===reviewId)
+    if(!review){
+        return next(new ErrorHandling("Review not found",400))
+    }
+
+    const replydata:any={
+        user:req.user,
+        comment
+    }
+    if(!review.commentReplies){
+        review.commentReplies=[]
+    }
+    review.commentReplies?.push(replydata)
+
+    await course?.save()
+
+    res.status(200).json({
+        succes:true,
+        course
+     })
+
+        } catch (error:any) {
+            return next(new ErrorHandling(error.message,400))
+        }
+    }
