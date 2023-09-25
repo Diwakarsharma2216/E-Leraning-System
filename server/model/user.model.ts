@@ -6,7 +6,7 @@ const emailRegexPattern:RegExp=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface IUser extends Document{
     name:string,
-    email:String,
+    email:string,
     password:string,
     avatar:{
         public_id:string;

@@ -3,6 +3,10 @@ import ErrorHandling from "../utlis/ErrorHandling";
 import cloudinary from "cloudinary"
 import CourseModel from "../model/course.model";
 import { redis } from "../utlis/redis";
+import mongoose from "mongoose";
+import path from "path";
+import ejs from "ejs"
+import sendMail from "../utlis/sendMail";
 
 // crate course
 export const uploadCourse=async(req:Request,res:Response,next:NextFunction)=>{
@@ -137,3 +141,107 @@ export const EditCourse=async(req:Request,res:Response,next:NextFunction)=>{
                 }
                 }
     
+                // add question in course
+                interface IAddQuestion{
+                    question:string,
+                    courseId:string,
+                    contentId:string
+                }
+
+                export const addQuestion=async(req:Request,res:Response,next:NextFunction)=>{
+                    try {
+                      const {question,courseId,contentId}:IAddQuestion=req.body
+                      const course =await CourseModel.findById(courseId)
+                      
+                      if(!mongoose.Types.ObjectId.isValid(contentId)){
+                        return  next(new ErrorHandling("Invalid course id",400))
+                      }
+
+                      const courseContent=course?.courseData?.find((item:any)=>item._id.equals(contentId))
+                      if(!courseContent){
+                        return  next(new ErrorHandling("Invalid content id",400))
+                      }
+
+                      // create a new question object
+                      const newQuestion:any={
+                        user:req.user,
+                        question,
+                        questionReplies:[]
+                      }
+
+                      // add this question to our course content
+                      courseContent.questions.push(newQuestion)
+
+                      await course?.save()
+                      
+                      res.status(201).json({
+                        success:true,
+                        course
+                    })
+                    } catch (error:any) {
+                        return next(new ErrorHandling(error.message,400))
+                    }
+                    }
+
+        // add answer in course question
+
+        interface IADAnswerData{
+            answer:string,
+            courseId:string,
+            contentId:string,
+            questionId:string
+        }
+
+        export const addAnswer=async(req:Request,res:Response,next:NextFunction)=>{
+            try {
+            const {answer,courseId,contentId,questionId}:IADAnswerData=req.body
+            const course=await CourseModel.findById(courseId)
+            if(!mongoose.Types.ObjectId.isValid(contentId)){
+                return next(new ErrorHandling("Invalid content id",400))
+            }
+   const courseContent=course?.courseData?.find((item:any)=>item._id.equals(contentId))
+           
+   if(!courseContent){
+    return next(new ErrorHandling("Invalid Content Id",400))
+   }
+
+   const question=courseContent?.questions?.find((item:any)=>item._id.equals(questionId))
+   if(!question){
+    return next(new ErrorHandling("Invalid Question Id",400))
+   }
+   
+   // create a new answer object
+   const newAnswer:any={
+    user:req.user,
+    answer
+   }
+
+   question.questionReplies?.push(newAnswer)
+   await course?.save()
+   if(req.user?._id===question.user?._id){
+    //  create a notification to admin
+   }else{
+    const data={
+        name:question.user.name,
+        title:courseContent.title,
+    }
+    const html=await ejs.renderFile(path.join(__dirname,"../mails/question-reply.ejs"),data)
+    try {
+        await sendMail({
+            email:question.user.email,
+            subject:"Question Reply",
+            template:"question-reply.ejs",
+            data
+        })
+    } catch (error:any) {
+        return next(new ErrorHandling(error.message,400))
+    }
+   }
+   res.status(200).json({
+    success:true,
+    course
+   })
+            } catch (error:any) {
+                return next(new ErrorHandling(error.message,400))
+            }
+            }
