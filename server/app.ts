@@ -8,6 +8,7 @@ import { CourseRouter } from "./routes/course.routes"
 import  OrderRouter  from "./routes/order.routes"
 import { NotificationRouter } from "./routes/notification.routes"
 import { analyticsRouter } from "./routes/analytics.routes"
+import { LayoutRouter } from "./routes/layout.routes"
 
 export const app=express()
 
@@ -36,6 +37,9 @@ app.use("/order",OrderRouter)
 app.use("/notification",NotificationRouter)
 // analytics routes
 app.use("/analytics",analyticsRouter)
+
+// layout router
+app.use("/layout",LayoutRouter)
 // test api
 app.get("/test",(req:Request,res:Response,next:NextFunction)=>{
 res.status(200).json({
