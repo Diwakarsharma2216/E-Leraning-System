@@ -6,6 +6,7 @@ import { middlewareErrorHandle } from "./middleware/error"
 import userRouter from "./routes/user.routes"
 import { CourseRouter } from "./routes/course.routes"
 import  OrderRouter  from "./routes/order.routes"
+import { NotificationRouter } from "./routes/notification.routes"
 
 export const app=express()
 
@@ -29,6 +30,9 @@ app.use("/course",CourseRouter)
 
 // order router
 app.use("/order",OrderRouter)
+
+// notification router
+app.use("/notification",NotificationRouter)
 // test api
 app.get("/test",(req:Request,res:Response,next:NextFunction)=>{
 res.status(200).json({
