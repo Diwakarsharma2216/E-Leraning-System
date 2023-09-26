@@ -359,3 +359,58 @@ export const UpdateUserAvatar=async(req:Request,res:Response,next:NextFunction)=
         return next(new ErrorHandling(error.message,400))
     }
 }
+
+
+// get all user --- only for admin
+
+export const getAllUser=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+ const users=await UserModel.find().sort({createdAt:-1})
+
+      res.status(201).json({
+        succues:true,
+        users
+    })
+    } catch (error:any) {
+        return next(new ErrorHandling(error.message,400))
+    }
+}
+
+
+// change role --only ad min
+
+export const UpdateRole=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {userId,role}=req.body
+     const users=await UserModel.findByIdAndUpdate(userId,{role},{new:true})
+             res.status(201).json({
+               succues:true,
+               users
+           })
+           } catch (error:any) {
+               return next(new ErrorHandling(error.message,400))
+           }
+}
+
+// only for admin
+export const deleteUser=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {id}=req.params;
+     const users=await UserModel.findById(id)
+     if(!users){
+        return next(new ErrorHandling("user not found",400))
+     }
+
+     await users.deleteOne({id})
+
+     await redis.del(id)
+
+
+             res.status(201).json({
+               succues:true,
+               message:"User deleted sucessfully"
+           })
+           } catch (error:any) {
+               return next(new ErrorHandling(error.message,400))
+           }
+}

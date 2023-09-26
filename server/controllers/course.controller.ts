@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import path from "path";
 import ejs from "ejs"
 import sendMail from "../utlis/sendMail";
+import notificationModel from "../model/notification.model";
 
 // crate course
 export const uploadCourse=async(req:Request,res:Response,next:NextFunction)=>{
@@ -171,6 +172,13 @@ export const EditCourse=async(req:Request,res:Response,next:NextFunction)=>{
 
                       // add this question to our course content
                       courseContent.questions.push(newQuestion)
+                      
+                      // notification to the admin 
+                     await notificationModel.create({
+                        user:req.user?._id,
+                        title:"New Question",
+                        message:`You have a new question in ${courseContent?.title}`
+                     })
 
                       await course?.save()
                       
@@ -183,7 +191,7 @@ export const EditCourse=async(req:Request,res:Response,next:NextFunction)=>{
                     }
                     }
 
-        // add answer in course question
+        // <<<<<<<<<<<<add answer in course question >>>>>>>>>>>>>>>>>>>>>>>>>
 
         interface IADAnswerData{
             answer:string,
@@ -219,7 +227,12 @@ export const EditCourse=async(req:Request,res:Response,next:NextFunction)=>{
    question.questionReplies?.push(newAnswer)
    await course?.save()
    if(req.user?._id===question.user?._id){
-    //  create a notification to admin
+    //  create a notification to admin to ans user question 
+    await notificationModel.create({
+        user:req.user?._id,
+        title:"New Question Reply Received",
+        message:`You have a new question reply in ${courseContent?.title}`
+     })
    }else{
     const data={
         name:question.user.name,
@@ -334,3 +347,44 @@ export const addReveiw=async(req:Request,res:Response,next:NextFunction)=>{
             return next(new ErrorHandling(error.message,400))
         }
     }
+
+
+    // get all courses only for admin
+    
+
+    export const getAllCourseForAdmin=async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+     const courses=await CourseModel.find().sort({createdAt:-1})
+    
+          res.status(201).json({
+            succues:true,
+            courses
+        })
+        } catch (error:any) {
+            return next(new ErrorHandling(error.message,400))
+        }
+    }
+
+
+    // only for admin
+export const deleteCourse=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {id}=req.params;
+     const course=await CourseModel.findById(id)
+     if(!course){
+        return next(new ErrorHandling("course not found",400))
+     }
+
+     await course.deleteOne({id})
+
+     await redis.del(id)
+
+
+             res.status(201).json({
+               succues:true,
+               message:"course deleted sucessfully"
+           })
+           } catch (error:any) {
+               return next(new ErrorHandling(error.message,400))
+           }
+}

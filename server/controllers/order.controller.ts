@@ -75,3 +75,19 @@ export const createOrder=async(req:Request,res:Response,next:NextFunction)=>{
         return next(new ErrorHandling(error.message,400))
     }
 }
+
+
+// get all order only for --admin
+
+export const getAllorder=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+ const orders=await OrderModel.find().sort({createdAt:-1})
+
+      res.status(201).json({
+        succues:true,
+        orders
+    })
+    } catch (error:any) {
+        return next(new ErrorHandling(error.message,400))
+    }
+}

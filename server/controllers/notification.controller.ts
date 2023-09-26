@@ -4,7 +4,7 @@ import notificationModel from "../model/notification.model"
 
 
 // get all notification -- only admin
-export const getNotification=async(req:Request,res:Response,next:NextFunction)=>{
+export const getAllNotification=async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const notification=await notificationModel.find().sort({createdAt:-1})
         res.status(201).json({
@@ -39,3 +39,8 @@ export const updateNotification=async(req:Request,res:Response,next:NextFunction
         return next(new ErrorHandling(error.message,400))
     }
 }
+
+
+// get all notification only for --admin
+
+
