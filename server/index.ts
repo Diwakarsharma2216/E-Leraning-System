@@ -68,9 +68,14 @@ cloudinary.config({
     api_secret:process.env.ClOUD_SECRET_KEY
 })
 
-app.listen(process.env.PORT,()=>{
-    console.log(`server is connected at ${process.env.PORT}`)
-    connectDB()
+app.listen(process.env.PORT,async()=>{
+    try {
+        console.log(`server is connected at ${process.env.PORT}`)
+      await  connectDB()
+    } catch (error:any) {
+       console.log(error.message) 
+    }
+   
 })
 
 /// sadklfjas;ldlkasdf
