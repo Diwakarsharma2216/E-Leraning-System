@@ -1,0 +1,77 @@
+.spot {
+  position: absolute;
+  width: 25px; /* Adjust the size of the spot as needed */
+  height: 25px; /* Adjust the size of the spot as needed */
+  background-color:transparent; /* Set your desired spot color */
+  border-radius: 50%; /* Makes it a circle */
+  animation: moveSpot 10s linear infinite; /* Adjust the animation duration as needed */
+}
+
+@keyframes moveSpot {
+  0% {
+      left: 0;
+      top: 50%;
+      transform: translate(0, -50%);
+  }
+  25% {
+      left: 50%;
+      top: 0;
+      transform: translate(-50%, 0);
+  }
+  50% {
+      left: 100%;
+      top: 50%;
+      transform: translate(-100%, -50%);
+      box-shadow: 0 0 20px 10px rgba(4, 129, 51, 0.938);
+  }
+  75% {
+      left: 50%;
+      top: 100%;
+      transform: translate(-50%, -100%);
+  }
+  100% {
+      left: 0;
+      top: 50%;
+      transform: translate(0, -50%);
+  }
+}
+
+
+.spot2 {
+    position: absolute;
+    width: 25px; /* Adjust the size of the spot as needed */
+    height: 25px; /* Adjust the size of the spot as needed */
+    background-color: transparent; /* Set your desired spot color */
+    border-radius: 50%; /* Makes it a circle */
+    animation: moveSpot2 8s linear infinite; /* Adjust the animation duration as needed */
+  }
+  
+  @keyframes moveSpot2 {
+    0% {
+        left: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+    25% {
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, 0);
+    }
+    50% {
+        left: 100%;
+        top: 50%;
+        transform: translate(-100%, -50%);
+        box-shadow: 0 0 20px 10px rgba(0, 0, 255, 0.7);
+    }
+    75% {
+        left: 50%;
+        top: 100%;
+        transform: translate(-50%, -100%);
+    }
+    100% {
+        left: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+  }
+  
